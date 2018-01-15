@@ -1,0 +1,7 @@
+dist/
+cabal.sandbox.config
+.cabal-sandbox/
+/config.ini
+/*.png
+/*.yml
+/.stack-work/

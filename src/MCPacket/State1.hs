@@ -13,12 +13,12 @@ import GetIS
 import MCPacket.Internal
 
 
-data S1Packet = -- Status
+data S1Packet =
     SRequest
   | SPing Int64
     deriving (Show)
 
-data C1Packet = -- Status
+data C1Packet =
     CResponse T.Text
   | CPong Int64
     deriving (Show)

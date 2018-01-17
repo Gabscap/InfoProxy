@@ -10,7 +10,7 @@ import GetIS
 import MCPacket.Internal
 
 
-data S0Packet = -- Handshake
+data S0Packet =
     SHandshake { hProto :: Int32
                , hHost  :: T.Text
                , hPort  :: Int

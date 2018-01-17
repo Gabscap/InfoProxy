@@ -1,5 +1,3 @@
-{-# LANGUAGE Rank2Types #-}
-
 module GetIS where
 
 import qualified Data.ByteString as BS
@@ -73,21 +71,3 @@ count g = GetIS $ \is -> do
     res <- runGetIS g is'
     c' <- c
     return (res, c')
-
-{-
-test :: Get S0Packet
-test = do
-    limit 30
-    x <- readVarInt
-    return x
-newtype Get a = Get
-  { unGet :: forall r. Input -> Buffer -> More
-                    -> Int -> Failure r
-                    -> Success a r -> Result r }
-instance Monad Get where
-    return = A.pure
-    {-# INLINE return #-}
-
-    m >>= g  =           Get $ \ s0 b0 m0 w0 kf ks ->
-      unGet m s0 b0 m0 w0 kf $ \ s1 b1 m1 w1 a     -> unGet (g a) s1 b1 m1 w1 kf ks
--}

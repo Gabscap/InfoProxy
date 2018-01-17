@@ -39,7 +39,6 @@ main = do
     shutdown <- newEmptyMVar
     installHandler sigINT  (CatchOnce $ putMVar shutdown ()) Nothing
     installHandler sigTERM (CatchOnce $ putMVar shutdown ()) Nothing
-    -- installHandler sigUSR1 (Catch     $ putStrLn' "Received reload signal" >> reloadServerConfig') Nothing
 
     putStrLn "Starting Servers..."
     threads <- forM serverConfigs $ async . runReaderT startServer

@@ -12,11 +12,11 @@ import GetIS
 import MCPacket.Internal
 
 
-data S2Packet = -- Status
+data S2Packet =
     SLoginStart T.Text
     deriving (Show)
 
-data C2Packet = -- Status
+data C2Packet =
     CDisconnect T.Text
     deriving (Show)
 

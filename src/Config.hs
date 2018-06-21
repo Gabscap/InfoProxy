@@ -31,7 +31,8 @@ instance Show Address where
 instance FromJSON Config
 instance FromJSON Server where
     parseJSON = withObject "Server" $ \o -> do
-        address     <- o .: "address"
+        host        <- o .: "host"
+        port        <- o .: "port"
         kickMessage <- o .: "kickMessage"
         motd        <- o .: "motd"
         maxplayers  <- o .: "maxplayers"
@@ -39,20 +40,15 @@ instance FromJSON Server where
         serverbrand <- o .:? "serverbrand" .!= "InfoProxy"
         protocol    <- o .: "protocol"
         serverIcon  <- o .: "serverIcon"
+        let address = Address{..}
         return Server{..}
-
-
-instance FromJSON Address where
-    parseJSON = withText "Address" $ \t ->
-        let [host,port'] = T.unpack <$> T.splitOn ":" t
-            port = read port'
-        in return Address{..}
 
 instance ToJSON Config
 instance ToJSON Server where
     -- only for initial config
-    toJSON Server{..} = object [
-        "address"     .= address
+    toJSON Server{address = Address{..}, ..} = object [
+        "host"        .= host
+      , "port"        .= port
       , "kickMessage" .= kickMessage
       , "motd"        .= motd
       , "maxplayers"  .= maxplayers

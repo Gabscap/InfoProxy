@@ -85,7 +85,7 @@ serverToServerConfig instanceId Server{..} = do
                             (Version serverbrand protocol)
                             base64Icon
     let status = jsonToText ping
-    return $ ServerConfig instanceId adress kickMsg status
+    return $ ServerConfig instanceId address kickMsg status
 
 
 handleReadFileEx :: FilePath -> IOException -> IO ()

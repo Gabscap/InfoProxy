@@ -27,7 +27,7 @@ type InstanceT = ReaderT ServerConfig
 type InOut     = (InputStream BS.ByteString, OutputStream BS.ByteString)
 
 data ServerConfig = ServerConfig { instanceId  :: Int
-                                 , adress      :: C.Adress
+                                 , address     :: C.Address
                                  , kickMessage :: T.Text
                                  , status      :: T.Text }
     deriving (Show)
@@ -40,7 +40,7 @@ catchAny action onE   = tryAny action >>= either onE return
 startServer :: InstanceT IO ()
 startServer = do
     sc <- ask
-    a@C.Adress{..} <- asks adress
+    a@C.Address{..} <- asks address
 
     msg $ "Listening on " ++ show a
     TCP.listen (Host host) (show port) $ \(sock, _) ->

@@ -12,7 +12,7 @@ import GHC.Generics
 data Config = Config { servers :: [Server] }
     deriving (Show, Generic)
 
-data Server = Server { adress      :: Adress
+data Server = Server { address     :: Address
                      , kickMessage :: T.Text
                      , motd        :: T.Text
                      , maxplayers  :: Int
@@ -22,16 +22,16 @@ data Server = Server { adress      :: Adress
                      , serverIcon  :: FilePath }
     deriving (Show, Generic)
 
-data Adress = Adress { host :: String
-                     , port :: Int }
-instance Show Adress where
-    show Adress{..} = host ++ ":" ++ show port
+data Address = Address { host :: String
+                       , port :: Int }
+instance Show Address where
+    show Address{..} = host ++ ":" ++ show port
 
 
 instance FromJSON Config
 instance FromJSON Server where
     parseJSON = withObject "Server" $ \o -> do
-        adress      <- o .: "adress"
+        address     <- o .: "address"
         kickMessage <- o .: "kickMessage"
         motd        <- o .: "motd"
         maxplayers  <- o .: "maxplayers"
@@ -42,24 +42,24 @@ instance FromJSON Server where
         return Server{..}
 
 
-instance FromJSON Adress where
-    parseJSON = withText "Adress" $ \t ->
+instance FromJSON Address where
+    parseJSON = withText "Address" $ \t ->
         let [host,port'] = T.unpack <$> T.splitOn ":" t
             port = read port'
-        in return Adress{..}
+        in return Address{..}
 
 instance ToJSON Config
 instance ToJSON Server where
     -- only for initial config
     toJSON Server{..} = object [
-        "adress"      .= adress
+        "address"     .= address
       , "kickMessage" .= kickMessage
       , "motd"        .= motd
       , "maxplayers"  .= maxplayers
       , "protocol"    .= protocol
       , "serverIcon"  .= serverIcon ]
 
-instance ToJSON Adress where
+instance ToJSON Address where
     toJSON = String . T.pack . show
 
 
@@ -67,7 +67,7 @@ parseConfigFile :: BS.ByteString -> Either String Config
 parseConfigFile = decodeEither
 
 sampleConfig :: Config
-sampleConfig = Config [ Server (Adress "127.0.0.1" 25566)
+sampleConfig = Config [ Server (Address "127.0.0.1" 25566)
                                "§cDefault kick message"
                                "§cDefault motd"
                                100

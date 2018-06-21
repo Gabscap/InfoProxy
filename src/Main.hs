@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables, ViewPatterns #-}
 
 module Main where
 
@@ -71,8 +71,7 @@ readConfig configPath = do
 
 serverToServerConfig :: Int -> Server -> IO ServerConfig
 serverToServerConfig instanceId Server{..} = do
-    let toBC    = singleBaseComponent . fromLegacyText
-    let kickMsg = jsonToText . toBC $ kickMessage
+    kickMsgBC <- jsonToText <$> toBC kickMessage
 
     iconContents <- (Just <$> BS.readFile serverIcon)
         `catch` (handleReadFileEx serverIcon >=> const (return Nothing))
@@ -80,12 +79,17 @@ serverToServerConfig instanceId Server{..} = do
                      . T.decodeUtf8
                      . B64.encode <$> iconContents
 
-    let ping   = ServerPing (DMCText $ toBC motd)
+    motdBC <- toBC motd
+    let ping   = ServerPing (DMCText motdBC)
                             (Players maxplayers online Nothing)
                             (Version serverbrand protocol)
                             base64Icon
     let status = jsonToText ping
-    return $ ServerConfig instanceId address kickMsg status
+    return $ ServerConfig instanceId address kickMsgBC status
+  where toBC t@(T.head -> '{') = either (error  . ("Invalid JSON: " ++)) return
+                                   . JSON.eitherDecodeStrict
+                                   . T.encodeUtf8 $ t
+        toBC t                 = return . singleBaseComponent . fromLegacyText $ t
 
 
 handleReadFileEx :: FilePath -> IOException -> IO ()

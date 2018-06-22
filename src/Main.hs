@@ -28,12 +28,11 @@ import OptParse
 import Server
 import ServerPing
 
-
 main :: IO ()
 main = do
     Options{..} <- parseCLI
     config      <- readConfig oConfig
-    serverConfigs <- mapM (uncurry serverToServerConfig) . zip [1..] $ servers config
+    serverConfigs <- zipWithM serverToServerConfig [1..] $ servers config
 
     -- Shutdown Handler (SIGINT (Ctrl-C), SIGTERM)
     shutdown <- newEmptyMVar
@@ -75,7 +74,7 @@ serverToServerConfig instanceId Server{..} = do
 
     iconContents <- (Just <$> BS.readFile serverIcon)
         `catch` (handleReadFileEx serverIcon >=> const (return Nothing))
-    let base64Icon = (T.append "data:image/png;base64,")
+    let base64Icon = T.append "data:image/png;base64,"
                      . T.decodeUtf8
                      . B64.encode <$> iconContents
 

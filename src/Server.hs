@@ -9,8 +9,8 @@ import qualified Data.Text as T
 import qualified System.IO.Streams as Streams
 import           System.IO.Streams (InputStream, OutputStream)
 
-import Prelude hiding (getContents)
-import Network.Simple.TCP as TCP hiding (send)
+import Prelude
+import Network.Simple.TCP as TCP
 
 import Control.Exception.Lifted
 import Control.Monad.Reader
@@ -44,7 +44,7 @@ startServer = do
 
     msg $ "Listening on " ++ show a
     TCP.listen (Host host) (show port) $ \(sock, _) ->
-        (acceptLoop sock $ flip runReaderT sc . handleClient)
+        acceptLoop sock (flip runReaderT sc . handleClient)
         `catch` (\(_ :: ShutdownException) -> return ())
 
     msg $ "Server closed on " ++ show a
@@ -103,7 +103,7 @@ msg m = do
     id <- asks instanceId
     liftIO . putStrLn $ "[Server #" ++ show id ++ "] " ++ m
 
-data ReadException = ReadException String
+newtype ReadException = ReadException String
 instance Show ReadException where
     show (ReadException msg) = "ReadException: " ++ msg
 instance Exception ReadException

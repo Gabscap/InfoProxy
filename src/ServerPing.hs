@@ -13,7 +13,7 @@ import           MCText
 import           Control.Monad
 import           Control.Applicative ((<|>))
 
-data PingException = PingException String
+newtype PingException = PingException String
 instance Show PingException where
     show (PingException msg) = "PingException: " ++ msg
 instance Exception PingException

@@ -36,7 +36,7 @@ instance Alternative GetIS where
 instance Monad GetIS where
     return  = GetIS . const . return
     {-# INLINE return #-}
-    f >>= x = GetIS $ \is -> (unGetIS f $ is) >>= (($ is) . unGetIS . x)
+    f >>= x = GetIS $ \is -> unGetIS f is >>= ($ is) . unGetIS . x
     {-# INLINE (>>=) #-}
     (>>)    = (*>)
     {-# INLINE (>>) #-}

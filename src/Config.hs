@@ -9,7 +9,7 @@ import Data.Yaml
 import GHC.Generics
 
 
-data Config = Config { servers :: [Server] }
+newtype Config = Config { servers :: [Server] }
     deriving (Show, Generic)
 
 data Server = Server { address     :: Address

@@ -112,7 +112,7 @@ fromChatColorName = fmap toEnum . flip elemIndex chatColorNames
 
 -- Stuff
 
-data MCTextException = MCTextException String
+newtype MCTextException = MCTextException String
 instance Show MCTextException where
     show (MCTextException msg) = "MCTextException: " ++ msg
 instance Exception MCTextException

@@ -27,7 +27,7 @@ maxPacketLength = 1024*1024
 
 
 readPacket :: Packet p => InputStream BS.ByteString -> IO p
-readPacket stream = runGetIS decodePacket stream
+readPacket = runGetIS decodePacket
 
 writePacket :: Packet p => OutputStream BS.ByteString -> p -> IO ()
 writePacket os p = do

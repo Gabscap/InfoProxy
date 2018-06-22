@@ -17,7 +17,7 @@ toLegacyText' :: BaseComponent -> T.Text
 toLegacyText' = flip runReader defaultLC . toLegacyTextR'
 
 toLegacyTextR :: [BaseComponent] -> Reader LegacyContext T.Text
-toLegacyTextR = liftM T.concat . mapM toLegacyTextR'
+toLegacyTextR = fmap T.concat . mapM toLegacyTextR'
 
 toLegacyTextR' :: BaseComponent -> Reader LegacyContext T.Text
 toLegacyTextR' t@TextComponent{} = do

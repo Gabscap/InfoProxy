@@ -19,7 +19,7 @@ fromLegacyText' = do
     case rest of
         (T.uncons -> Nothing) -> pure <$> toTextComponent buffer
 
-        (fmap (fmap T.uncons) . T.uncons -> Just ('§', Just (cc, rest'))) -> do
+        (fmap (fmap T.uncons) . T.uncons -> Just ('§', Just (cc, rest'))) ->
             case fromColorCode cc of
                 Nothing -> put (buffer `T.snoc` '§' `T.snoc` cc, rest') >> fromLegacyText'
                 Just chatColor -> do

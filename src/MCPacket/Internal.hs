@@ -55,7 +55,7 @@ putShort = putWord16be . fromIntegral
 putLong :: Putter Int64
 putLong = putInt64be
 
-data PacketException = PacketException String
+newtype PacketException = PacketException String
 instance Show PacketException where
     show (PacketException msg) = "PacketException: " ++ msg
 instance Exception PacketException

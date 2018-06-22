@@ -23,6 +23,7 @@ import System.IO.Error
 import System.Posix.Signals
 
 import Config
+import Logger
 import MCText
 import OptParse
 import Server
@@ -32,7 +33,10 @@ main :: IO ()
 main = do
     Options{..} <- parseCLI
     config      <- readConfig oConfig
-    serverConfigs <- zipWithM serverToServerConfig [1..] $ servers config
+
+    (log, logCleanup) <- setupLogger
+    serverConfigs <- zipWithM (serverToServerConfig log) [1..] $ servers config
+
 
     -- Shutdown Handler (SIGINT (Ctrl-C), SIGTERM)
     shutdown <- newEmptyMVar
@@ -49,7 +53,8 @@ main = do
             forM_ threads $ flip cancelWith ShutdownException
         Right _ -> return ()
 
-    putStrLn "Bye!"
+    log ("Bye!" :: String)
+    logCleanup
 
 readConfig :: FilePath -> IO Config
 readConfig configPath = do
@@ -68,8 +73,8 @@ readConfig configPath = do
         Right c  -> return c
 
 
-serverToServerConfig :: Int -> Server -> IO ServerConfig
-serverToServerConfig instanceId Server{..} = do
+serverToServerConfig :: Logger String -> Int -> Server -> IO ServerConfig
+serverToServerConfig logger instanceId Server{..} = do
     kickMsgBC <- jsonToText <$> toBC kickMessage
 
     iconContents <- (Just <$> BS.readFile serverIcon)
@@ -84,7 +89,9 @@ serverToServerConfig instanceId Server{..} = do
                             (Version serverbrand protocol)
                             base64Icon
     let status = jsonToText ping
-    return $ ServerConfig instanceId address kickMsgBC status
+
+    let logger' = logger . (("[Server #" ++ show instanceId ++ "] ") ++)
+    return $ ServerConfig instanceId address kickMsgBC status logger'
   where toBC t@(T.head -> '{') = either (error  . ("Invalid JSON: " ++)) return
                                    . JSON.eitherDecodeStrict
                                    . T.encodeUtf8 $ t

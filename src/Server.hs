@@ -21,6 +21,7 @@ import qualified Control.Concurrent.Async.Lifted as L
 import System.Timeout.Lifted
 
 import qualified Config as C
+import Logger
 import MCPacket
 
 type InstanceT = ReaderT ServerConfig
@@ -29,8 +30,8 @@ type InOut     = (InputStream BS.ByteString, OutputStream BS.ByteString)
 data ServerConfig = ServerConfig { instanceId  :: Int
                                  , address     :: C.Address
                                  , kickMessage :: T.Text
-                                 , status      :: T.Text }
-    deriving (Show)
+                                 , status      :: T.Text
+                                 , logger      :: Logger String }
 
 ----
 tryAny action         = L.withAsync action L.waitCatch
@@ -99,9 +100,7 @@ nextState 2 = handleLogin
 nextState i = throw.ReadException $ "Unsupported State: " ++ show i
 
 msg :: MonadIO m => String -> InstanceT m ()
-msg m = do
-    id <- asks instanceId
-    liftIO . putStrLn $ "[Server #" ++ show id ++ "] " ++ m
+msg m = asks logger >>= \log -> liftIO . log $ m
 
 newtype ReadException = ReadException String
 instance Show ReadException where

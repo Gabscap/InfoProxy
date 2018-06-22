@@ -19,6 +19,7 @@ executable InfoProxy
   main-is:             Main.hs
   other-modules:       Config
                      , GetIS
+                     , Logger
                      , MCPacket
                      , MCPacket.Internal
                      , MCPacket.State0
@@ -33,7 +34,7 @@ executable InfoProxy
                      , Server
                      , ServerPing
   -- other-extensions:    
-  build-depends:       base >=4.10 && <4.11
+  build-depends:       base >=4.9 && <4.11
                      , aeson
                      , async
                      , base64-bytestring
@@ -43,6 +44,7 @@ executable InfoProxy
                      , cereal-io-streams
                      , directory
                      , extra
+                     , fast-logger
                      , io-streams
                      , lifted-async
                      , lifted-base

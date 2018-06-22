@@ -37,13 +37,12 @@ main = do
     (log, logCleanup) <- setupLogger
     serverConfigs <- zipWithM (serverToServerConfig log) [1..] $ servers config
 
-
     -- Shutdown Handler (SIGINT (Ctrl-C), SIGTERM)
     shutdown <- newEmptyMVar
     installHandler sigINT  (CatchOnce $ putMVar shutdown ()) Nothing
     installHandler sigTERM (CatchOnce $ putMVar shutdown ()) Nothing
 
-    putStrLn "Starting Servers..."
+    log ("Starting Servers..." :: String)
     threads <- forM serverConfigs $ async . runReaderT startServer
     let waitForWorkers = forM_ threads wait
 

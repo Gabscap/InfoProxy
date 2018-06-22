@@ -1,5 +1,3 @@
-{-# LANGUAGE RankNTypes #-}
-
 module Logger(Logger, setupLogger) where
 
 import Data.Semigroup

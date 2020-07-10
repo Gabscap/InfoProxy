@@ -13,7 +13,8 @@ stack build
 Default config
 ```
 servers:
-- address: 127.0.0.1:25566
+- host: 127.0.0.1
+  port: 25565
   motd: §cDefault motd
   kickMessage: §cDefault kick message
   maxplayers: 100
@@ -21,7 +22,8 @@ servers:
   protocol: 340
 ```
 
-* *address* Listen address
+* *host* The address to listen on
+* *port* The port to listen on
 * *motd* Message of the day (displayed in Multiplayer Browser)
 * *kickMessage* Message a connecting user gets
 * *maxplayer* Max slots (displayed in Multiplayer Browser)

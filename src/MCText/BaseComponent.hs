@@ -54,4 +54,4 @@ infixr 8 .=?
 k .=? v = (k .=) <$> v
 
 singleBaseComponent :: [BaseComponent] -> BaseComponent
-singleBaseComponent = TextComponent "" Nothing Nothing Nothing Nothing Nothing Nothing Nothing
+singleBaseComponent = TextComponent "" Nothing Nothing Nothing Nothing Nothing Nothing Nothing 
